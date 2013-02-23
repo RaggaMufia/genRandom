@@ -38,8 +38,8 @@ void printDirections() {
 	const char* messageLowBoundOpt_2 = "generation lower bound.\n";
 	const char* messageHighBoundOpt_1 = "\t\t-h <high bound>\t:   Specify a pseudorandom ";
 	const char* messageHighBoundOpt_2 = "generation upper bound.\n";
-	const char* messageBinaryWriteOpt_1 = "\t\t-b <true/false>\t:   Specify whether to write the file";
-	const char* messageBinaryWriteOpt_2 = " in binary. Use only true/false, all lower case.\n";
+	const char* messageBinaryWriteOpt_1 = "\t\t-b <true/false>\t:   Specify whether to write the";
+	const char* messageBinaryWriteOpt_2 = " file in binary. Use only true/false, all lower case.\n";
     const char* messageVersion = "\n  RandomGen v. ";
     const char* messageAuthorLisc =
         "  Copyright 2013, Jonathan Hyry\n  Licensed under GNU General Public License (GPL) v. 3\n";
