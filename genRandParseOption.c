@@ -17,7 +17,6 @@
 
 #include "genRandCommon.h"
 
-#define BUFFER_SIZE 1024
 #define ARG_SPACE_COUNT 2
 #define OPTION 0
 #define ARG_STR 1
@@ -54,5 +53,5 @@ char ** parseOption(char** args, int* arg) {
         return argument;
     }
     else
-        return (char **)-1;
+        return NULL;
 }

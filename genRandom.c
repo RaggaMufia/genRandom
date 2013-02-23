@@ -80,6 +80,14 @@ int main(int argv, char** argc) {
             // past the first, parse it.
             else
                 option = parseOption(argc, &arg);
+            
+            //If an argument was not formatted correctly,
+            // skip to the next argument.
+            if(option == NULL) {
+                printf("Ignoring %s, improper argument format.\n", argc[arg++]);
+                continue;
+            }
+                
             //Record the program parameter.
             switch(option[0][0]) {
             
