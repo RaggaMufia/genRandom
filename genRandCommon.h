@@ -22,6 +22,23 @@
 
 #define GENRAND_V "0.0.1"
 
+//Properties for the wrapper
+struct genRandProps {
+    
+        int elements;
+        char delimiter;
+        char* fileName;
+        char* fileMode;
+        int randGenPeriod;
+        int randUpperBound;
+        int randLowerBound;
+        char seedType;
+        int seedValue;
+};
+
+//Struct pointer typedef for convenience.
+typedef struct genRandProps* genRandPropsPtr;
+ 
 /*
  * Function prototypes.
  */
@@ -32,5 +49,11 @@ void printDirections();
 //Prints the version text if passed -v
 void printVersion();
 
-//Parses command line parameters.
+//Parses through the command line arguments.
+int parseCmdArgs(genRandPropsPtr, int, char**);
+
+//Parses a command line parameter into an understandable option.
 char** parseOption(char**, int*);
+
+//Sets the default program parameters.
+void setDefaultProperties(genRandPropsPtr);

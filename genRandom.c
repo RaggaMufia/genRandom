@@ -36,105 +36,45 @@ int main(int argv, char** argc) {
     //Set all program parameters to default,
     // then set to custom values as discovered
     // through argument parsing.
-    int elements = ELEMENTS;
-    char delimiter = DELIMITER;
-    char* fileName = (char *)malloc(sizeof(char)*DEFAULT_FILE_NAME_LENGTH);
-    strcpy(fileName, RAND_OUT_FILE);
+    genRandPropsPtr properties = (genRandPropsPtr)malloc(sizeof(struct genRandProps));
+    
+    setDefaultProperties(properties);
+    
+    int parseResult = 0;
     
     //Use default program parameters.
     if(argv<2) {
     
-        printf("No file name argument; Will save file as %s with %d ", fileName, elements);
+        printf("No file name argument; Will save file as %s with %d ",
+                            properties->fileName, properties->elements);
         printf("pseudorandom integers, and newline delimiter.\n");
     }
     //Parse program parameters.
-    else {
+    else
+        parseResult = parseCmdArgs(properties, argv, argc);
+        
+    if(parseResult != 0)
+        return parseResult;
+        
+    printf("File mode: %s\n", properties->fileMode);
     
-        int arg = 0;
-        int argLen = 0;
-        char** option;
-        
-        //Parse the argument list if there are more
-        // arguments than just the executable string.
-        for(arg = 1; arg <= argv-1; arg++) {
-        
-            //Check if we are just printing help or
-            // version information.
-            if(arg == 1) {
-            
-                //If it is either a request for the help
-                // or version number, print that and exit.
-                if(strstr(argc[arg], "-h") != NULL) {
-                    printDirections(); return 1;
-                }
-                else if(strstr(argc[arg], "-v") != NULL) {
-                    printVersion(); return 2;
-                }
-                //Otherwise try to parse the first argument
-                // as an option.
-                else {
-                    option = parseOption(argc, &arg);
-                }
-            }
-            //If more than one argument and we have moved
-            // past the first, parse it.
-            else
-                option = parseOption(argc, &arg);
-            
-            //If an argument was not formatted correctly,
-            // skip to the next argument.
-            if(option == NULL) {
-                printf("Ignoring %s, improper argument format.\n", argc[arg++]);
-                continue;
-            }
-                
-            //Record the program parameter.
-            switch(option[0][0]) {
-            
-                case 'f':
-                    argLen = strlen(option[1]);
-                    fileName = (char *)realloc(fileName, sizeof(char)*argLen);
-                    strcpy(fileName, option[1]);
-                    break;
-                
-                case 'n':
-                    if(atoi(option[1]) == 0)
-                        printf("Invalid number format - Using default argument\n");
-                    else
-                        elements = atoi(option[1]);
-                    break;
-                
-                case 'd':
-                    if(strlen(option[1]) == 1)
-                        delimiter = option[1][0];
-                    else {
-                        printf("Invalid delimiter.");
-                        printf(" Delimiter can only be one character.\n");
-                        printf(" Using default newline delimiter.\n");
-                    }
-                    break;
-                //If we don't know the option, report.
-                default:
-                    printf("Invalid option.\n");
-            }
-            
-            //Clean up.
-            free(option[0]);
-            free(option[1]);
-            free(option);
-        }
-    }
     //Set up the pseudorandom number cache
     // and initialize the pseudorandom generator.
     printf("Allocating cache... ");
-    unsigned int * randCache = (unsigned int *)calloc(elements, ELEMENT_SIZE);
+    unsigned int * randCache = (unsigned int *)calloc(properties->elements, ELEMENT_SIZE);
+    
     if(randCache != NULL)
         printf("Done.\nInitializing random generator...\n");
     else {
         printf("Fatal: Allocation failure.\n");
         return -1;
     }
-    srand(time(NULL));
+    
+    if(properties->seedType == 't')
+        srand(time(NULL));
+    else
+        srand(properties->seedValue);
+        
     printf("Random generator init successful.\n");
     
     int elementsWritten = 0;
@@ -145,7 +85,7 @@ int main(int argv, char** argc) {
     char batch = getchar();
     getchar();
     
-    printf("Reading %d pseudorandom bytes...\n", (ELEMENT_SIZE*elements));
+    printf("Reading %d pseudorandom bytes...\n", (ELEMENT_SIZE*properties->elements));
     
     int i = 0;
     
@@ -153,21 +93,33 @@ int main(int argv, char** argc) {
     if(batch == 'y' || batch == 'Y') {
     
         printf("Batch read starting... ");
-        for(i = 0; i < elements; randCache[i++] = rand())
-            if(i % 50 == 0)
-                srand(time(NULL));
+        for(i = 0; i < properties->elements;
+            randCache[i++] = rand() % properties->randUpperBound + properties->randLowerBound)
+            if(i % properties->randGenPeriod == 0) {
+                
+                if(properties->seedType == 't')
+                    srand(time(NULL));
+                else
+                    srand(++properties->seedValue);
+            }
+        
         printf(" Reading completed.\n");
     }
     //Report progress while reading.
     else {
     
-        for(i = 0; i < elements; i++) {
+        for(i = 0; i < properties->elements; i++) {
         
-            randCache[i] = rand();
+            randCache[i] = rand() % properties->randUpperBound + properties->randLowerBound;
             
-            if(i % 50 == 0) {
+            if(i % properties->randGenPeriod == 0) {
+            
                 printf("Reinitializing random generator with a new seed...\n");
-                srand(time(NULL));
+                
+                if(properties->seedType == 't')
+                    srand(time(NULL));
+                else
+                    srand(++properties->seedValue);
             }
             
             printf("Item read: %u\n", randCache[i]);
@@ -176,7 +128,7 @@ int main(int argv, char** argc) {
     
     printf("Successfully read %d elements.\nOutputting to file...\n", i);
     
-    FILE * randOut = fopen(fileName, "w");
+    FILE * randOut = fopen(properties->fileName, properties->fileMode);
     
     if(randOut == NULL) {
     
@@ -187,13 +139,15 @@ int main(int argv, char** argc) {
     //Write to the file if no error in trying to open it.
     else {
     
-        printf("Output file %s opened successfully for writing. Beginning write...\n", fileName);
-        for(elementsWritten = 0; elementsWritten < elements;\
-            fprintf(randOut, "%d%c", randCache[elementsWritten++], delimiter)) {
-            
-            //Uncomment if not getting expected results to see what is written.
-            //printf(" Wrote %d%c ", randCache[elementsWritten], delimiter);
-        }
+        printf("Output file %s opened successfully for writing. Beginning write...\n",
+                        properties->fileName);
+        //Write text.
+        if(strcmp(properties->fileMode, "w") == 0)
+            for(elementsWritten = 0; elementsWritten < properties->elements;
+                fprintf(randOut, "%d%c", randCache[elementsWritten++], properties->delimiter));
+        //Write binary.
+        else
+            elementsWritten = fwrite(randCache, ELEMENT_SIZE, properties->elements, randOut);
     }
     
     printf("%d Elements written. Cleaning up and exiting.\n", elementsWritten);
@@ -203,4 +157,24 @@ int main(int argv, char** argc) {
     free(randCache);
     
     return 0;
+}
+
+/*
+ * Sets inital properties.
+ */
+void setDefaultProperties(genRandPropsPtr props) {
+
+    props->elements = ELEMENTS;
+    props->delimiter = DELIMITER;
+    props->randGenPeriod = 50;
+    props->randUpperBound = RAND_MAX;
+    props->randLowerBound = 0;
+    props->seedType = 't';
+    props->seedValue = 0;
+    
+    props->fileName = (char *)malloc(sizeof(char)*DEFAULT_FILE_NAME_LENGTH);
+    strcpy(props->fileName, RAND_OUT_FILE);
+    
+    props->fileMode = (char *)malloc(sizeof(char));
+    props->fileMode[0] = 'w';
 }
