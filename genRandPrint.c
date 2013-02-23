@@ -30,23 +30,38 @@ void printDirections() {
     const char* messageQuantityOpt_2 = "of pseudorandom numbers.\n";
     const char* messageDelimiterOpt_1 = "\t\t-d <delimiter>\t:   One character; This will ";
     const char* messageDelimiterOpt_2 = "override the default delimiter.\n";
+    const char* messageSeedOpt_1 = "\t\t-s <seed value>\t:   Specify a seed for pseudorandom";
+    const char* messageSeedOpt_2 = " generation manually.\n";
+	const char* messageSeedRefreshOpt_1 = "\t\t-r <interval>\t:   Specify how often the";
+	const char* messageSeedRefreshOpt_2 = " pseudorandom generator is refreshed with a new seed.\n";
+	const char* messageLowBoundOpt_1 = "\t\t-l <low bound>\t:   Specify a pseudorandom ";
+	const char* messageLowBoundOpt_2 = "generation lower bound.\n";
+	const char* messageHighBoundOpt_1 = "\t\t-h <high bound>\t:   Specify a pseudorandom ";
+	const char* messageHighBoundOpt_2 = "generation upper bound.\n";
+	const char* messageBinaryWriteOpt_1 = "\t\t-b <true/false>\t:   Specify whether to write the file";
+	const char* messageBinaryWriteOpt_2 = " in binary. Use only true/false, all lower case.\n";
     const char* messageVersion = "\n  RandomGen v. ";
-    const char* messageAuthorLisc = \
+    const char* messageAuthorLisc =
         "  Copyright 2013, Jonathan Hyry\n  Licensed under GNU General Public License (GPL) v. 3\n";
     
-    printf("%s%s%s%s%s%s%s%s%s%s%s%s%s\n%s\n",\
-                                        messageIntro, messageNoArgs_1, messageNoArgs_2,\
-                                        messageHelp, messageDispVersion, messageOptions,\
-                                        messageFileOpt, messageQuantityOpt_1, messageQuantityOpt_2,\
-                                        messageDelimiterOpt_1, messageDelimiterOpt_2,\
-                                        messageVersion, GENRAND_V, messageAuthorLisc);
+    printf("%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s\n%s\n",
+                                        messageIntro, messageNoArgs_1, messageNoArgs_2,
+                                        messageHelp, messageDispVersion, messageOptions,
+                                        messageFileOpt, messageQuantityOpt_1, messageQuantityOpt_2,
+                                        messageDelimiterOpt_1, messageDelimiterOpt_2,
+                                        messageSeedOpt_1, messageSeedOpt_2, messageSeedRefreshOpt_1,
+                                        messageSeedRefreshOpt_2, messageLowBoundOpt_1,
+                                        messageLowBoundOpt_2, messageHighBoundOpt_1,
+                                        messageHighBoundOpt_2, messageBinaryWriteOpt_1,
+                                        messageBinaryWriteOpt_2, messageVersion, GENRAND_V,
+                                        messageAuthorLisc);
 }
 
 //Print genRand version message
 void printVersion() {
 
     const char* messageVersion = "\nRandomGen v. ";
-    const char* messageAuthorLisc = \
+    const char* messageAuthorLisc =
         "Copyright 2013, Jonathan Hyry\nLicensed under GNU General Public License (GPL) v. 3\n\n";
         
     printf("%s%s\n%s", messageVersion, GENRAND_V, messageAuthorLisc);
