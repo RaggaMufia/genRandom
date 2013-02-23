@@ -23,7 +23,7 @@
 #define ARG_STR 1
 
 /*
- * This parses a comman line option in the form
+ * This parses a command line option in the form
  * -<character> <argument> and returns a fresh
  * string array with {<character>, <argument>} as
  * its structure. This function does not provide
