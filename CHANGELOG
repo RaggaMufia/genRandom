@@ -1,0 +1,18 @@
+-Version 0.0.8
+
+	-Fixed bug in handling upper bound with a custom lower bound.
+	-Added VERSION file to hold the current version.
+
+-Version 0.0.5
+	-Fixed multiple small bugs.
+	-Added handling of extra command line options.
+
+-Version 0.0.2
+	-Fixed a few small bugs.
+	-Added initial command line options, file name and quantity of numbers to generate.
+
+-Version 0.0.1
+	-Implemented initial, basic generator functionality.
+
+Copyright 2013 Jonathan Hyry
+genRandom licensed under GPLv3
