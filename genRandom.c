@@ -55,6 +55,10 @@ int main(int argv, char** argc) {
         
     if(parseResult != 0)
         return parseResult;
+    //Correctly handle custom upper/lower bounds.
+    else if(properties->randLowerBound > 0 &&
+            properties->randLowerBound < properties->randUpperBound)
+        properties->randUpperBound -= properties->randLowerBound;
         
     printf("File mode: %s\n", properties->fileMode);
     

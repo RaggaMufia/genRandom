@@ -20,7 +20,7 @@
 #include <string.h>
 #include <time.h>
 
-#define GENRAND_V "0.0.1"
+#define GENRAND_V "0.0.8"
 
 //Properties for the wrapper
 struct genRandProps {

@@ -40,7 +40,7 @@ void printDirections() {
 	const char* messageHighBoundOpt_2 = "generation upper bound.\n";
 	const char* messageBinaryWriteOpt_1 = "\t\t-b <true/false>\t:   Specify whether to write the";
 	const char* messageBinaryWriteOpt_2 = " file in binary. Use only true/false, all lower case.\n";
-    const char* messageVersion = "\n  RandomGen v. ";
+    const char* messageVersion = "\n  GenRandom v. ";
     const char* messageAuthorLisc =
         "  Copyright 2013, Jonathan Hyry\n  Licensed under GNU General Public License (GPL) v. 3\n";
     
@@ -60,7 +60,7 @@ void printDirections() {
 //Print genRand version message
 void printVersion() {
 
-    const char* messageVersion = "\nRandomGen v. ";
+    const char* messageVersion = "\nGenRandom v. ";
     const char* messageAuthorLisc =
         "Copyright 2013, Jonathan Hyry\nLicensed under GNU General Public License (GPL) v. 3\n\n";
         
